@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mapas_geolocalizacao/Home.dart';
+import 'package:mapas_geolocalizacao/home.dart';
 
 void main() {
   runApp(const MaterialApp(
