@@ -15,6 +15,19 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Mapas e geolocalização"),
+      ),
+      // ignore: avoid_unnecessary_containers
+      body: GoogleMap(
+        mapType: MapType.normal,
+        initialCameraPosition: const CameraPosition(
+            target: LatLng(-23.6631361, -46.540326), zoom: 16),
+        onMapCreated: (GoogleMapController controller) {
+          _controller.complete(controller);
+        },
+      ),
+    );
   }
 }
