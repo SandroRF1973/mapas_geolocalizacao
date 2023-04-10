@@ -14,6 +14,7 @@ class _HomeState extends State<Home> {
       Completer<GoogleMapController>();
 
   Set<Marker> _marcadores = {};
+  Set<Polygon> _polygons = {};
 
   _onMapCreated(GoogleMapController googleMapController) {
     _controller.complete(googleMapController);
@@ -30,7 +31,7 @@ class _HomeState extends State<Home> {
   }
 
   _carregarMarcadores() {
-    Set<Marker> marcadoresLocal = {};
+    /*Set<Marker> marcadoresLocal = {};
 
     Marker marcadorShopping = Marker(
         markerId: const MarkerId("marcador-shopping"),
@@ -56,6 +57,49 @@ class _HomeState extends State<Home> {
 
     setState(() {
       _marcadores = marcadoresLocal;
+    });*/
+
+    Set<Polygon> listaPolygons = {};
+    Polygon polygon1 = const Polygon(
+        polygonId: PolygonId("polygon1"),
+        // fillColor: Colors.green,
+        fillColor: Colors.green,
+        strokeColor: Colors.red,
+        strokeWidth: 10,
+        points: [
+          LatLng(-23.557169370910877, -46.65714611623797),
+          LatLng(-23.559276783356392, -46.65863785067438),
+          LatLng(-23.560724604381264, -46.65689456886243),
+          LatLng(-23.558933593811584, -46.654654042238334)
+        ],
+        // ignore: avoid_print
+        consumeTapEvents: true,
+        zIndex: 1);
+    listaPolygons.add(polygon1);
+
+    setState(() {
+      _polygons = listaPolygons;
+    });
+
+    Polygon polygon2 = const Polygon(
+        polygonId: PolygonId("polygon2"),
+        // fillColor: Colors.green,
+        fillColor: Colors.purple,
+        strokeColor: Colors.orange,
+        strokeWidth: 10,
+        points: [
+          LatLng(-23.55804344175226, -46.65582987997056),
+          LatLng(-23.558874608018304, -46.656315424904754),
+          LatLng(-23.559282145685923, -46.6546423423604)
+        ],
+        // ignore: avoid_print
+        consumeTapEvents: true,
+        zIndex: 0);
+    listaPolygons.add(polygon1);
+    listaPolygons.add(polygon2);
+
+    setState(() {
+      _polygons = listaPolygons;
     });
   }
 
@@ -83,9 +127,10 @@ class _HomeState extends State<Home> {
         // mapType: MapType.normal,
         mapType: MapType.normal,
         initialCameraPosition: const CameraPosition(
-            target: LatLng(-23.56331643290178, -46.652642650333135), zoom: 16),
+            target: LatLng(-23.56331643290178, -46.652642650333135), zoom: 17),
         onMapCreated: _onMapCreated,
         markers: _marcadores,
+        polygons: _polygons,
       ),
     );
   }
