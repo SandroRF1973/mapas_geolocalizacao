@@ -14,6 +14,9 @@ class _HomeState extends State<Home> {
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
 
+  CameraPosition _posicaoCamera =
+      const CameraPosition(target: LatLng(-23.563645, -46.653642), zoom: 16);
+
   Set<Marker> _marcadores = {};
   Set<Polygon> _polygons = {};
   Set<Polyline> _polylines = {};
@@ -24,12 +27,8 @@ class _HomeState extends State<Home> {
 
   _movimentarCamera() async {
     GoogleMapController googleMapController = await _controller.future;
-    googleMapController.animateCamera(CameraUpdate.newCameraPosition(
-        const CameraPosition(
-            target: LatLng(-23.6631361, -46.540326),
-            zoom: 16,
-            tilt: 0,
-            bearing: 30)));
+    googleMapController
+        .animateCamera(CameraUpdate.newCameraPosition(_posicaoCamera));
   }
 
   _carregarMarcadores() {
@@ -154,8 +153,39 @@ class _HomeState extends State<Home> {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
 
+    setState(() {
+      _posicaoCamera = CameraPosition(
+          target: LatLng(position.latitude, position.longitude), zoom: 17);
+      _movimentarCamera();
+    });
+
     // ignore: avoid_print
-    print("localização atual: ${position.toString()}");
+    //print("localização atual: ${position.toString()}");
+  }
+
+  _adicionarListenerLocalizacao() {
+    var locationOptions = const LocationSettings(
+        accuracy: LocationAccuracy.high, distanceFilter: 10);
+
+    Geolocator.getPositionStream(locationSettings: locationOptions)
+        .listen((Position position) {
+      // ignore: avoid_print
+      print("localização atual: ${position.toString()}");
+
+      Marker marcadorUsuario = Marker(
+          markerId: const MarkerId("marcador-usuario"),
+          position: LatLng(position.latitude, position.longitude),
+          infoWindow: const InfoWindow(title: "Meu local"),
+          icon: BitmapDescriptor.defaultMarkerWithHue(
+              BitmapDescriptor.hueMagenta));
+
+      setState(() {
+        _marcadores.add(marcadorUsuario);
+        _posicaoCamera = CameraPosition(
+            target: LatLng(position.latitude, position.longitude), zoom: 17);
+        _movimentarCamera();
+      });
+    });
   }
 
   @override
@@ -163,7 +193,8 @@ class _HomeState extends State<Home> {
     super.initState();
 
     // _carregarMarcadores();
-    _recuperarLocalizacaoAtual();
+    //_recuperarLocalizacaoAtual();
+    _adicionarListenerLocalizacao();
   }
 
   @override
@@ -182,12 +213,12 @@ class _HomeState extends State<Home> {
       body: GoogleMap(
         // mapType: MapType.normal,
         mapType: MapType.normal,
-        initialCameraPosition: const CameraPosition(
-            target: LatLng(-23.563645, -46.653642), zoom: 16),
+        initialCameraPosition: _posicaoCamera,
         onMapCreated: _onMapCreated,
+        myLocationEnabled: true,
         markers: _marcadores,
-        polygons: _polygons,
-        polylines: _polylines,
+        //polygons: _polygons,
+        //polylines: _polylines,
       ),
     );
   }
