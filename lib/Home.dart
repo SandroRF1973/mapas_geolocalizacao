@@ -15,6 +15,7 @@ class _HomeState extends State<Home> {
 
   Set<Marker> _marcadores = {};
   Set<Polygon> _polygons = {};
+  Set<Polyline> _polylines = {};
 
   _onMapCreated(GoogleMapController googleMapController) {
     _controller.complete(googleMapController);
@@ -59,22 +60,22 @@ class _HomeState extends State<Home> {
       _marcadores = marcadoresLocal;
     });*/
 
-    Set<Polygon> listaPolygons = {};
+    /*Set<Polygon> listaPolygons = {};
     Polygon polygon1 = const Polygon(
         polygonId: PolygonId("polygon1"),
         // fillColor: Colors.green,
         fillColor: Colors.green,
         strokeColor: Colors.red,
         strokeWidth: 10,
-        points: [
-          LatLng(-23.557169370910877, -46.65714611623797),
-          LatLng(-23.559276783356392, -46.65863785067438),
-          LatLng(-23.560724604381264, -46.65689456886243),
-          LatLng(-23.558933593811584, -46.654654042238334)
-        ],
+          points: [
+            LatLng(-23.557169370910877, -46.65714611623797),
+            LatLng(-23.559276783356392, -46.65863785067438),
+            LatLng(-23.560724604381264, -46.65689456886243),
+            LatLng(-23.558933593811584, -46.654654042238334)
+          ],
         // ignore: avoid_print
         consumeTapEvents: true,
-        zIndex: 1);
+        zIndex: 0);
     listaPolygons.add(polygon1);
 
     setState(() {
@@ -94,12 +95,38 @@ class _HomeState extends State<Home> {
         ],
         // ignore: avoid_print
         consumeTapEvents: true,
-        zIndex: 0);
+        zIndex: 1);
     listaPolygons.add(polygon1);
     listaPolygons.add(polygon2);
 
     setState(() {
       _polygons = listaPolygons;
+    });*/
+
+    Set<Polyline> listaPolylines = {};
+
+    Polyline polyline = Polyline(
+        polylineId: const PolylineId("polyline"),
+        color: Colors.red,
+        width: 10,
+        startCap: Cap.roundCap,
+        endCap: Cap.roundCap,
+        jointType: JointType.round,
+        points: const [
+          LatLng(-23.563645, -46.653642),
+          LatLng(-23.566064, -46.650778),
+          LatLng(-23.563232, -46.648020)
+        ],
+        consumeTapEvents: true,
+        onTap: () {
+          // ignore: avoid_print
+          print("clicado na linha");
+        });
+
+    listaPolylines.add(polyline);
+
+    setState(() {
+      _polylines = listaPolylines;
     });
   }
 
@@ -127,10 +154,11 @@ class _HomeState extends State<Home> {
         // mapType: MapType.normal,
         mapType: MapType.normal,
         initialCameraPosition: const CameraPosition(
-            target: LatLng(-23.56331643290178, -46.652642650333135), zoom: 17),
+            target: LatLng(-23.563645, -46.653642), zoom: 16),
         onMapCreated: _onMapCreated,
         markers: _marcadores,
         polygons: _polygons,
+        polylines: _polylines,
       ),
     );
   }
