@@ -203,7 +203,7 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         title: const Text("Mapas e geolocalização"),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
       floatingActionButton: FloatingActionButton(
         // ignore: sort_child_properties_last
         child: const Icon(Icons.done),
