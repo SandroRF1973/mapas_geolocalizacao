@@ -188,13 +188,19 @@ class _HomeState extends State<Home> {
     });
   }
 
+  _recuperarLocalParaEndereco() async {
+    List<Placemark> listaEnderecos =
+        await Geolocator().placemarkFromAddress("Av. Paulista");
+  }
+
   @override
   void initState() {
     super.initState();
 
     // _carregarMarcadores();
     //_recuperarLocalizacaoAtual();
-    _adicionarListenerLocalizacao();
+    // _adicionarListenerLocalizacao();
+    _recuperarLocalParaEndereco();
   }
 
   @override
