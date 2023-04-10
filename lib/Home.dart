@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:geolocator/geolocator.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -120,7 +121,7 @@ class _HomeState extends State<Home> {
         consumeTapEvents: true,
         onTap: () {
           // ignore: avoid_print
-          print("clicado na linha");
+          print("clicado na linha ");
         });
 
     listaPolylines.add(polyline);
@@ -130,11 +131,39 @@ class _HomeState extends State<Home> {
     });
   }
 
+  _recuperarLocalizacaoAtual() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // ignore: avoid_print
+      print("Location services are disabled.");
+    }
+
+    permission = await Geolocator.checkPermission();
+
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // ignore: avoid_print
+        print("Location permissions are denied");
+      }
+    }
+
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+
+    // ignore: avoid_print
+    print("localização atual: ${position.toString()}");
+  }
+
   @override
   void initState() {
     super.initState();
 
-    _carregarMarcadores();
+    // _carregarMarcadores();
+    _recuperarLocalizacaoAtual();
   }
 
   @override
