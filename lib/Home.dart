@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -130,38 +131,38 @@ class _HomeState extends State<Home> {
     });
   }
 
-  _recuperarLocalizacaoAtual() async {
-    bool serviceEnabled;
-    LocationPermission permission;
+  // _recuperarLocalizacaoAtual() async {
+  //   bool serviceEnabled;
+  //   LocationPermission permission;
 
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      // ignore: avoid_print
-      print("Location services are disabled.");
-    }
+  //   serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  //   if (!serviceEnabled) {
+  //     // ignore: avoid_print
+  //     print("Location services are disabled.");
+  //   }
 
-    permission = await Geolocator.checkPermission();
+  //   permission = await Geolocator.checkPermission();
 
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        // ignore: avoid_print
-        print("Location permissions are denied");
-      }
-    }
+  //   if (permission == LocationPermission.denied) {
+  //     permission = await Geolocator.requestPermission();
+  //     if (permission == LocationPermission.denied) {
+  //       // ignore: avoid_print
+  //       print("Location permissions are denied");
+  //     }
+  //   }
 
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+  //   Position position = await Geolocator.getCurrentPosition(
+  //       desiredAccuracy: LocationAccuracy.high);
 
-    setState(() {
-      _posicaoCamera = CameraPosition(
-          target: LatLng(position.latitude, position.longitude), zoom: 17);
-      _movimentarCamera();
-    });
+  //   setState(() {
+  //     _posicaoCamera = CameraPosition(
+  //         target: LatLng(position.latitude, position.longitude), zoom: 17);
+  //     _movimentarCamera();
+  //   });
 
-    // ignore: avoid_print
-    //print("localização atual: ${position.toString()}");
-  }
+  //   // ignore: avoid_print
+  //   //print("localização atual: ${position.toString()}");
+  // }
 
   _adicionarListenerLocalizacao() {
     var locationOptions = const LocationSettings(
@@ -189,29 +190,66 @@ class _HomeState extends State<Home> {
   }
 
   _recuperarLocalParaEndereco() async {
-    List<Placemark> listaEnderecos =
-        await Geolocator().placemarkFromAddress("Av. Paulista, 1372");
+    List<Location> listaEnderecos =
+        await locationFromAddress("Av. Paulista, 1372");
 
     // ignore: avoid_print
     print("total: ${listaEnderecos.length}");
 
+    // ignore: unnecessary_null_comparison, prefer_is_empty
     if (listaEnderecos != null && listaEnderecos.length > 0) {
-      Placemark endereco = listaEnderecos[0];
+      Location endereco = listaEnderecos[0];
 
-      String resultado;
+      // Placemark enderecoPlacemark =
+      //     await placemarkFromCoordinates(endereco.latitude, endereco.longitude)
+      //         as Placemark;
 
-      resultado = "\n administrativeArea ${endereco.administrativeArea}";
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(endereco.latitude, endereco.longitude);
 
-      resultado += "\n subAdministrativeArea " + endereco.subAdministrativeArea;
+      Placemark enderecoPlacemark = placemarks.first;
 
-      resultado += "\n locality " + endereco.locality;
-      resultado += "\n subLocality " + endereco.subLocality;
-      resultado += "\n thoroughfare " + endereco.thoroughfare;
-      resultado += "\n subThoroughfare " + endereco.subThoroughfare;
-      resultado += "\n postalCode " + endereco.postalCode;
-      resultado += "\n country " + endereco.country;
-      resultado += "\n isoCountryCode " + endereco.isoCountryCode;
-      resultado += "\n position ${endereco.position}";
+      String resultado = "";
+
+      resultado =
+          "\n administrativeArea ${enderecoPlacemark.administrativeArea}";
+      resultado +=
+          "\n subAdministrativeArea ${enderecoPlacemark.subAdministrativeArea}";
+      resultado += "\n locality ${enderecoPlacemark.locality}";
+      resultado += "\n subLocality ${enderecoPlacemark.subLocality}";
+      resultado += "\n thoroughfare ${enderecoPlacemark.thoroughfare}";
+      resultado += "\n subThoroughfare ${enderecoPlacemark.subThoroughfare}";
+      resultado += "\n postalCode ${enderecoPlacemark.postalCode}";
+      resultado += "\n country ${enderecoPlacemark.country}";
+      resultado += "\n isoCountryCode ${enderecoPlacemark.isoCountryCode}";
+
+      // ignore: avoid_print
+      print("resultado: $resultado");
+      //-23.565564, -46.652753
+    }
+  }
+
+  _recuperarLocalParaLatLong() async {
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(-23.565564, -46.652753);
+
+    // ignore: unnecessary_null_comparison, prefer_is_empty
+    if (placemarks != null && placemarks.length > 0) {
+      Placemark enderecoPlacemark = placemarks.first;
+
+      String resultado = "";
+
+      resultado =
+          "\n administrativeArea ${enderecoPlacemark.administrativeArea}";
+      resultado +=
+          "\n subAdministrativeArea ${enderecoPlacemark.subAdministrativeArea}";
+      resultado += "\n locality ${enderecoPlacemark.locality}";
+      resultado += "\n subLocality ${enderecoPlacemark.subLocality}";
+      resultado += "\n thoroughfare ${enderecoPlacemark.thoroughfare}";
+      resultado += "\n subThoroughfare ${enderecoPlacemark.subThoroughfare}";
+      resultado += "\n postalCode ${enderecoPlacemark.postalCode}";
+      resultado += "\n country ${enderecoPlacemark.country}";
+      resultado += "\n isoCountryCode ${enderecoPlacemark.isoCountryCode}";
 
       // ignore: avoid_print
       print("resultado: $resultado");
@@ -226,7 +264,8 @@ class _HomeState extends State<Home> {
     // _carregarMarcadores();
     //_recuperarLocalizacaoAtual();
     // _adicionarListenerLocalizacao();
-    _recuperarLocalParaEndereco();
+    //_recuperarLocalParaEndereco();
+    _recuperarLocalParaLatLong();
   }
 
   @override
