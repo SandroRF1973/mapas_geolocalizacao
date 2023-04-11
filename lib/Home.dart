@@ -190,7 +190,33 @@ class _HomeState extends State<Home> {
 
   _recuperarLocalParaEndereco() async {
     List<Placemark> listaEnderecos =
-        await Geolocator().placemarkFromAddress("Av. Paulista");
+        await Geolocator().placemarkFromAddress("Av. Paulista, 1372");
+
+    // ignore: avoid_print
+    print("total: ${listaEnderecos.length}");
+
+    if (listaEnderecos != null && listaEnderecos.length > 0) {
+      Placemark endereco = listaEnderecos[0];
+
+      String resultado;
+
+      resultado = "\n administrativeArea ${endereco.administrativeArea}";
+
+      resultado += "\n subAdministrativeArea " + endereco.subAdministrativeArea;
+
+      resultado += "\n locality " + endereco.locality;
+      resultado += "\n subLocality " + endereco.subLocality;
+      resultado += "\n thoroughfare " + endereco.thoroughfare;
+      resultado += "\n subThoroughfare " + endereco.subThoroughfare;
+      resultado += "\n postalCode " + endereco.postalCode;
+      resultado += "\n country " + endereco.country;
+      resultado += "\n isoCountryCode " + endereco.isoCountryCode;
+      resultado += "\n position ${endereco.position}";
+
+      // ignore: avoid_print
+      print("resultado: $resultado");
+      //-23.565564, -46.652753
+    }
   }
 
   @override
